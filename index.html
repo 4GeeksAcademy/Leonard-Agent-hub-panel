@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AgentHub Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            boxShadow: {
+              soft: '0 20px 45px -20px rgba(15, 23, 42, 0.30)',
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="h-full bg-slate-100 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
+    <div class="min-h-screen flex">
+      <aside class="hidden w-72 shrink-0 border-r border-slate-200 bg-white/80 backdrop-blur-xl dark:border-slate-800 dark:bg-slate-900/80 lg:flex lg:flex-col">
+        <div class="flex items-center gap-3 border-b border-slate-200 px-6 py-5 dark:border-slate-800">
+          <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-indigo-600 text-lg font-bold text-white shadow-soft">A</div>
+          <div>
+            <p class="text-xs uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Platform</p>
+            <h1 class="text-xl font-semibold text-slate-900 dark:text-slate-50">AgentHub</h1>
+          </div>
+        </div>
+
+        <nav class="flex-1 space-y-2 px-4 py-6" aria-label="Sidebar navigation">
+          <a href="#dashboard" class="nav-link group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-slate-50">
+            <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-200">◫</span>
+            Dashboard
+          </a>
+          <a href="#users" class="nav-link group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-slate-50">
+            <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-200">◎</span>
+            User Management
+          </a>
+          <a href="#agents" class="nav-link group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-slate-50">
+            <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-200">◈</span>
+            Agent Management
+          </a>
+          <a href="#skills" class="nav-link group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-slate-50">
+            <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-200">✦</span>
+            Skills
+          </a>
+          <a href="#contracts" class="nav-link group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-slate-50">
+            <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-200">▣</span>
+            Agent Contracts
+          </a>
+          <a href="#errors" class="nav-link group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-slate-50">
+            <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-200">⚑</span>
+            Error Log
+          </a>
+        </nav>
+
+        <div class="border-t border-slate-200 px-4 py-5 dark:border-slate-800">
+          <div class="rounded-2xl bg-slate-100 px-4 py-3 dark:bg-slate-800">
+            <p class="text-xs uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">Status</p>
+            <p class="mt-1 text-sm font-semibold text-slate-800 dark:text-slate-100">Operations healthy</p>
+          </div>
+        </div>
+      </aside>
+
+      <div class="flex min-w-0 flex-1 flex-col">
+        <header class="border-b border-slate-200 bg-white/80 px-5 py-4 backdrop-blur-xl dark:border-slate-800 dark:bg-slate-900/80">
+          <div class="flex items-center justify-between gap-4">
+            <div>
+              <p class="text-xs font-medium uppercase tracking-[0.2em] text-indigo-600 dark:text-indigo-400">Admin panel</p>
+              <h2 class="mt-1 text-2xl font-semibold text-slate-900 dark:text-slate-50">Operations overview</h2>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <div class="hidden rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 md:block">
+                Updated 2 minutes ago
+              </div>
+              <button id="theme-toggle" type="button" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700" aria-label="Toggle color mode">
+                <span id="theme-icon">☀️</span>
+                <span id="theme-label">Light</span>
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <main class="flex-1 p-4 md:p-6">
+          <section id="dashboard" class="space-y-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Revenue & health</p>
+                <h3 class="text-xl font-semibold text-slate-900 dark:text-slate-50">This month</h3>
+              </div>
+            </div>
+
+            <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+              <article class="rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-white p-5 shadow-soft dark:border-emerald-900/50 dark:from-emerald-950/60 dark:to-slate-900">
+                <div class="flex items-center justify-between">
+                  <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500/15 text-xl text-emerald-600 dark:text-emerald-300">↗</span>
+                  <span class="rounded-full bg-emerald-100 px-2 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-900/60 dark:text-emerald-200">+12.4%</span>
+                </div>
+                <p class="mt-5 text-sm text-slate-500 dark:text-slate-400">Total revenue</p>
+                <p class="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-50">$48,200</p>
+              </article>
+
+              <article class="rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 to-white p-5 shadow-soft dark:border-amber-900/50 dark:from-amber-950/60 dark:to-slate-900">
+                <div class="flex items-center justify-between">
+                  <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-500/15 text-xl text-amber-600 dark:text-amber-300">%</span>
+                  <span class="rounded-full bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-700 dark:bg-amber-900/60 dark:text-amber-200">-4.1%</span>
+                </div>
+                <p class="mt-5 text-sm text-slate-500 dark:text-slate-400">Discount losses</p>
+                <p class="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-50">$3,420</p>
+              </article>
+
+              <article class="rounded-2xl border border-violet-200 bg-gradient-to-br from-violet-50 to-white p-5 shadow-soft dark:border-violet-900/50 dark:from-violet-950/60 dark:to-slate-900">
+                <div class="flex items-center justify-between">
+                  <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-500/15 text-xl text-violet-600 dark:text-violet-300">◌</span>
+                  <span class="rounded-full bg-violet-100 px-2 py-1 text-xs font-semibold text-violet-700 dark:bg-violet-900/60 dark:text-violet-200">+8</span>
+                </div>
+                <p class="mt-5 text-sm text-slate-500 dark:text-slate-400">Active agents</p>
+                <p class="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-50">184</p>
+              </article>
+
+              <article class="rounded-2xl border border-rose-200 bg-gradient-to-br from-rose-50 to-white p-5 shadow-soft dark:border-rose-900/50 dark:from-rose-950/60 dark:to-slate-900">
+                <div class="flex items-center justify-between">
+                  <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-rose-500/15 text-xl text-rose-600 dark:text-rose-300">!</span>
+                  <span class="rounded-full bg-rose-100 px-2 py-1 text-xs font-semibold text-rose-700 dark:bg-rose-900/60 dark:text-rose-200">Needs review</span>
+                </div>
+                <p class="mt-5 text-sm text-slate-500 dark:text-slate-400">Failing agents</p>
+                <p class="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-50">12</p>
+              </article>
+            </div>
+
+            <div class="rounded-2xl border border-dashed border-slate-300 bg-slate-50/80 p-10 text-center dark:border-slate-700 dark:bg-slate-800/60">
+              <p class="text-lg font-medium text-slate-500 dark:text-slate-300">Weekly activity chart</p>
+              <div class="mt-8 flex h-40 items-end justify-around gap-3 px-4">
+                <div class="w-full rounded-t-xl bg-indigo-200/80 dark:bg-indigo-900/70" style="height: 30%"></div>
+                <div class="w-full rounded-t-xl bg-indigo-300/80 dark:bg-indigo-800/70" style="height: 42%"></div>
+                <div class="w-full rounded-t-xl bg-indigo-400/80 dark:bg-indigo-700/70" style="height: 55%"></div>
+                <div class="w-full rounded-t-xl bg-indigo-500/80 dark:bg-indigo-600/70" style="height: 68%"></div>
+                <div class="w-full rounded-t-xl bg-indigo-600/80 dark:bg-indigo-500/70" style="height: 74%"></div>
+                <div class="w-full rounded-t-xl bg-indigo-700/80 dark:bg-indigo-400/70" style="height: 86%"></div>
+                <div class="w-full rounded-t-xl bg-indigo-800/80 dark:bg-indigo-300/70" style="height: 90%"></div>
+              </div>
+            </div>
+          </section>
+
+          <section id="users" class="mt-12 hidden">
+            <div class="mb-4 flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Customer roster</p>
+                <h3 class="text-xl font-semibold text-slate-900 dark:text-slate-50">User Management</h3>
+              </div>
+            </div>
+
+            <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-soft dark:border-slate-800 dark:bg-slate-900">
+              <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-800">
+                <thead class="bg-slate-50 dark:bg-slate-800/80">
+                  <tr>
+                    <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">Name</th>
+                    <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">Email</th>
+                    <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">Plan</th>
+                    <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">Status</th>
+                    <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                  <tr data-row="user-1" class="user-row hover:bg-slate-50 dark:hover:bg-slate-800/60">
+                    <td class="px-5 py-4 text-sm font-medium text-slate-900 dark:text-slate-50">Alicia Morgan</td>
+                    <td class="px-5 py-4 text-sm text-slate-600 dark:text-slate-300">alicia@northstar.ai</td>
+                    <td class="px-5 py-4 text-sm text-slate-600 dark:text-slate-300">Enterprise</td>
+                    <td class="px-5 py-4"><span class="inline-flex rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-900/60 dark:text-emerald-200">Active</span></td>
+                    <td class="px-5 py-4 text-right">
+                      <div class="relative inline-block action-menu">
+                        <button type="button" class="action-trigger rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-50" aria-label="Open user actions">⋮</button>
+                        <div class="menu hidden absolute right-0 top-10 z-20 w-40 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800">
+                          <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-700" data-modal-type="user" data-user-name="Alicia Morgan" data-user-email="alicia@northstar.ai" data-user-plan="Enterprise" data-user-status="Active" data-user-company="Northstar Labs" data-user-region="North America" data-user-last-login="2026-09-25 14:42 UTC">View detail</button>
+                          <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-red-600 transition hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/40" data-action="delete-row">Delete</button>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr data-row="user-2" class="user-row hover:bg-slate-50 dark:hover:bg-slate-800/60">
+                    <td class="px-5 py-4 text-sm font-medium text-slate-900 dark:text-slate-50">Daniel Ortiz</td>
+                    <td class="px-5 py-4 text-sm text-slate-600 dark:text-slate-300">daniel@harborlogic.com</td>
+                    <td class="px-5 py-4 text-sm text-slate-600 dark:text-slate-300">Pro</td>
+                    <td class="px-5 py-4"><span class="inline-flex rounded-full bg-violet-100 px-2.5 py-1 text-xs font-semibold text-violet-700 dark:bg-violet-900/60 dark:text-violet-200">Trial</span></td>
+                    <td class="px-5 py-4 text-right">
+                      <div class="relative inline-block action-menu">
+                        <button type="button" class="action-trigger rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-50" aria-label="Open user actions">⋮</button>
+                        <div class="menu hidden absolute right-0 top-10 z-20 w-40 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800">
+                          <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-700" data-modal-type="user" data-user-name="Daniel Ortiz" data-user-email="daniel@harborlogic.com" data-user-plan="Pro" data-user-status="Trial" data-user-company="Harbor Logic" data-user-region="EMEA" data-user-last-login="2026-09-24 08:18 UTC">View detail</button>
+                          <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-red-600 transition hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/40" data-action="delete-row">Delete</button>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr data-row="user-3" class="user-row hover:bg-slate-50 dark:hover:bg-slate-800/60">
+                    <td class="px-5 py-4 text-sm font-medium text-slate-900 dark:text-slate-50">Priya Shah</td>
+                    <td class="px-5 py-4 text-sm text-slate-600 dark:text-slate-300">priya@copperpeak.io</td>
+                    <td class="px-5 py-4 text-sm text-slate-600 dark:text-slate-300">Starter</td>
+                    <td class="px-5 py-4"><span class="inline-flex rounded-full bg-amber-100 px-2.5 py-1 text-xs font-semibold text-amber-700 dark:bg-amber-900/60 dark:text-amber-200">Pending</span></td>
+                    <td class="px-5 py-4 text-right">
+                      <div class="relative inline-block action-menu">
+                        <button type="button" class="action-trigger rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-50" aria-label="Open user actions">⋮</button>
+                        <div class="menu hidden absolute right-0 top-10 z-20 w-40 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800">
+                          <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-700" data-modal-type="user" data-user-name="Priya Shah" data-user-email="priya@copperpeak.io" data-user-plan="Starter" data-user-status="Pending" data-user-company="Copper Peak" data-user-region="APAC" data-user-last-login="2026-09-22 10:05 UTC">View detail</button>
+                          <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-red-600 transition hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/40" data-action="delete-row">Delete</button>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr data-row="user-4" class="user-row hover:bg-slate-50 dark:hover:bg-slate-800/60">
+                    <td class="px-5 py-4 text-sm font-medium text-slate-900 dark:text-slate-50">Marcus Lee</td>
+                    <td class="px-5 py-4 text-sm text-slate-600 dark:text-slate-300">marcus@atlasops.io</td>
+                    <td class="px-5 py-4 text-sm text-slate-600 dark:text-slate-300">Enterprise</td>
+                    <td class="px-5 py-4"><span class="inline-flex rounded-full bg-sky-100 px-2.5 py-1 text-xs font-semibold text-sky-700 dark:bg-sky-900/60 dark:text-sky-200">Suspended</span></td>
+                    <td class="px-5 py-4 text-right">
+                      <div class="relative inline-block action-menu">
+                        <button type="button" class="action-trigger rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-50" aria-label="Open user actions">⋮</button>
+                        <div class="menu hidden absolute right-0 top-10 z-20 w-40 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800">
+                          <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-700" data-modal-type="user" data-user-name="Marcus Lee" data-user-email="marcus@atlasops.io" data-user-plan="Enterprise" data-user-status="Suspended" data-user-company="Atlas Ops" data-user-region="North America" data-user-last-login="2026-09-20 11:13 UTC">View detail</button>
+                          <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-red-600 transition hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/40" data-action="delete-row">Delete</button>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr data-row="user-5" class="user-row hover:bg-slate-50 dark:hover:bg-slate-800/60">
+                    <td class="px-5 py-4 text-sm font-medium text-slate-900 dark:text-slate-50">Nia Johnson</td>
+                    <td class="px-5 py-4 text-sm text-slate-600 dark:text-slate-300">nia@lumenworks.ai</td>
+                    <td class="px-5 py-4 text-sm text-slate-600 dark:text-slate-300">Pro</td>
+                    <td class="px-5 py-4"><span class="inline-flex rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-900/60 dark:text-emerald-200">Active</span></td>
+                    <td class="px-5 py-4 text-right">
+                      <div class="relative inline-block action-menu">
+                        <button type="button" class="action-trigger rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-50" aria-label="Open user actions">⋮</button>
+                        <div class="menu hidden absolute right-0 top-10 z-20 w-40 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800">
+                          <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-700" data-modal-type="user" data-user-name="Nia Johnson" data-user-email="nia@lumenworks.ai" data-user-plan="Pro" data-user-status="Active" data-user-company="Lumen Works" data-user-region="APAC" data-user-last-login="2026-09-25 07:15 UTC">View detail</button>
+                          <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-red-600 transition hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/40" data-action="delete-row">Delete</button>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section id="agents" class="mt-12 hidden">
+            <div class="mb-4 flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Fleet health</p>
+                <h3 class="text-xl font-semibold text-slate-900 dark:text-slate-50">Agent Management</h3>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              <article data-row="agent-1" class="agent-card rounded-2xl border border-slate-200 bg-white p-5 shadow-soft dark:border-slate-800 dark:bg-slate-900">
+                <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                  <div>
+                    <h4 class="text-lg font-semibold text-slate-900 dark:text-slate-50">Sales Enablement Agent</h4>
+                    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Owner: Northstar Labs</p>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="inline-flex rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-900/60 dark:text-emerald-200">Active</span>
+                    <button type="button" class="agent-toggle inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800" aria-expanded="false">
+                      <span>Skills</span>
+                      <span class="text-base">▾</span>
+                    </button>
+                    <div class="relative inline-block action-menu">
+                      <button type="button" class="action-trigger rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-50" aria-label="Open agent actions">⋮</button>
+                      <div class="menu hidden absolute right-0 top-10 z-20 w-40 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800">
+                        <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-700" data-modal-type="configure" data-agent-name="Sales Enablement Agent" data-agent-prompt="You are a sales enablement agent that researches the latest market trends, prepares customer summaries, and recommends next-best actions for account teams.
+
+Goal: maintain crisp, factual responses grounded in product context and customer signals.
+
+Always provide concise recommendations, cite assumptions when uncertain, and escalate to a human when flagged deals require approval.">Configure</button>
+                        <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-red-600 transition hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/40" data-action="delete-row">Delete</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="skill-list mt-4 max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+                  <ul class="space-y-2 border-t border-slate-200 pt-4 text-sm text-slate-600 dark:border-slate-700 dark:text-slate-300">
+                    <li class="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 dark:bg-slate-800"><span>Web research</span><span class="font-medium text-slate-500 dark:text-slate-400">Enabled</span></li>
+                    <li class="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 dark:bg-slate-800"><span>CRM sync</span><span class="font-medium text-slate-500 dark:text-slate-400">Enabled</span></li>
+                    <li class="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 dark:bg-slate-800"><span>Meeting summary</span><span class="font-medium text-slate-500 dark:text-slate-400">Enabled</span></li>
+                  </ul>
+                </div>
+              </article>
+
+              <article data-row="agent-2" class="agent-card rounded-2xl border border-slate-200 bg-white p-5 shadow-soft dark:border-slate-800 dark:bg-slate-900">
+                <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                  <div>
+                    <h4 class="text-lg font-semibold text-slate-900 dark:text-slate-50">Support Triage Agent</h4>
+                    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Owner: Harbor Logic</p>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="inline-flex rounded-full bg-sky-100 px-2.5 py-1 text-xs font-semibold text-sky-700 dark:bg-sky-900/60 dark:text-sky-200">Inactive</span>
+                    <button type="button" class="agent-toggle inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800" aria-expanded="false">
+                      <span>Skills</span>
+                      <span class="text-base">▾</span>
+                    </button>
+                    <div class="relative inline-block action-menu">
+                      <button type="button" class="action-trigger rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-50" aria-label="Open agent actions">⋮</button>
+                      <div class="menu hidden absolute right-0 top-10 z-20 w-40 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800">
+                        <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-700" data-modal-type="configure" data-agent-name="Support Triage Agent" data-agent-prompt="You are a customer support triage agent. Review incoming support issues, classify severity, suggest escalation paths, and summarize the customer state in a helpful and empathetic way.
+
+Use calm, clear language, preserve customer context, and avoid making promises not authorized by the business team.">Configure</button>
+                        <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-red-600 transition hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/40" data-action="delete-row">Delete</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="skill-list mt-4 max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+                  <ul class="space-y-2 border-t border-slate-200 pt-4 text-sm text-slate-600 dark:border-slate-700 dark:text-slate-300">
+                    <li class="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 dark:bg-slate-800"><span>Inbox routing</span><span class="font-medium text-slate-500 dark:text-slate-400">Enabled</span></li>
+                    <li class="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 dark:bg-slate-800"><span>Sentiment analysis</span><span class="font-medium text-slate-500 dark:text-slate-400">Enabled</span></li>
+                    <li class="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 dark:bg-slate-800"><span>Knowledge base lookup</span><span class="font-medium text-slate-500 dark:text-slate-400">Enabled</span></li>
+                  </ul>
+                </div>
+              </article>
+
+              <article data-row="agent-3" class="agent-card rounded-2xl border border-slate-200 bg-white p-5 shadow-soft dark:border-slate-800 dark:bg-slate-900">
+                <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                  <div>
+                    <h4 class="text-lg font-semibold text-slate-900 dark:text-slate-50">Ops Monitor Agent</h4>
+                    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Owner: Atlas Ops</p>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="inline-flex rounded-full bg-rose-100 px-2.5 py-1 text-xs font-semibold text-rose-700 dark:bg-rose-900/60 dark:text-rose-200">Failing</span>
+                    <button type="button" class="agent-toggle inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800" aria-expanded="false">
+                      <span>Skills</span>
+                      <span class="text-base">▾</span>
+                    </button>
+                    <div class="relative inline-block action-menu">
+                      <button type="button" class="action-trigger rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-50" aria-label="Open agent actions">⋮</button>
+                      <div class="menu hidden absolute right-0 top-10 z-20 w-40 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800">
+                        <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-700" data-modal-type="configure" data-agent-name="Ops Monitor Agent" data-agent-prompt="You are an operations monitoring agent for internal infrastructure. Track workflow health, identify anomalies, summarize operational impact, and suggest the most likely root-cause candidates before escalating to engineering.
+
+Base all observations on the available telemetry and never assume a service is healthy without evidence.">Configure</button>
+                        <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-red-600 transition hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/40" data-action="delete-row">Delete</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="skill-list mt-4 max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+                  <ul class="space-y-2 border-t border-slate-200 pt-4 text-sm text-slate-600 dark:border-slate-700 dark:text-slate-300">
+                    <li class="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 dark:bg-slate-800"><span>Log analysis</span><span class="font-medium text-slate-500 dark:text-slate-400">Enabled</span></li>
+                    <li class="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 dark:bg-slate-800"><span>Alert summarization</span><span class="font-medium text-slate-500 dark:text-slate-400">Enabled</span></li>
+                    <li class="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 dark:bg-slate-800"><span>Incident trace</span><span class="font-medium text-slate-500 dark:text-slate-400">Enabled</span></li>
+                  </ul>
+                </div>
+              </article>
+
+              <article data-row="agent-4" class="agent-card rounded-2xl border border-slate-200 bg-white p-5 shadow-soft dark:border-slate-800 dark:bg-slate-900">
+                <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                  <div>
+                    <h4 class="text-lg font-semibold text-slate-900 dark:text-slate-50">Revenue Forecast Agent</h4>
+                    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Owner: Copper Peak</p>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="inline-flex rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-900/60 dark:text-emerald-200">Active</span>
+                    <button type="button" class="agent-toggle inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800" aria-expanded="false">
+                      <span>Skills</span>
+                      <span class="text-base">▾</span>
+                    </button>
+                    <div class="relative inline-block action-menu">
+                      <button type="button" class="action-trigger rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-50" aria-label="Open agent actions">⋮</button>
+                      <div class="menu hidden absolute right-0 top-10 z-20 w-40 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800">
+                        <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-700" data-modal-type="configure" data-agent-name="Revenue Forecast Agent" data-agent-prompt="You are a revenue forecasting agent. Combine pipeline, historical conversion metrics, and sales velocity to estimate likely close outcomes for active deals. Present ranges with confidence cues and call out assumptions that materially affect forecast quality.
+
+Keep outputs clear, evidence-based, and suitable for executive review.">Configure</button>
+                        <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-red-600 transition hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/40" data-action="delete-row">Delete</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="skill-list mt-4 max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+                  <ul class="space-y-2 border-t border-slate-200 pt-4 text-sm text-slate-600 dark:border-slate-700 dark:text-slate-300">
+                    <li class="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 dark:bg-slate-800"><span>Pipeline scoring</span><span class="font-medium text-slate-500 dark:text-slate-400">Enabled</span></li>
+                    <li class="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 dark:bg-slate-800"><span>Forecast modeling</span><span class="font-medium text-slate-500 dark:text-slate-400">Enabled</span></li>
+                    <li class="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 dark:bg-slate-800"><span>Trend summary</span><span class="font-medium text-slate-500 dark:text-slate-400">Enabled</span></li>
+                  </ul>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section id="skills" class="mt-12 hidden">
+            <div class="mb-4 flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Capability catalog</p>
+                <h3 class="text-xl font-semibold text-slate-900 dark:text-slate-50">Skills</h3>
+              </div>
+            </div>
+
+            <div class="mb-5 rounded-2xl border border-indigo-200 bg-indigo-50 p-4 text-sm text-indigo-800 dark:border-indigo-900/50 dark:bg-indigo-950/40 dark:text-indigo-200">
+              A skill is a reusable capability or tool that can be attached to an agent, such as browsing the web, reading documents, or syncing external systems for a specific business workflow.
+            </div>
+
+            <div class="grid gap-4 md:grid-cols-2">
+              <article data-row="skill-1" class="skill-card rounded-2xl border border-slate-200 bg-white p-5 shadow-soft dark:border-slate-800 dark:bg-slate-900">
+                <div class="flex items-start justify-between gap-4">
+                  <div>
+                    <h4 class="text-lg font-semibold text-slate-900 dark:text-slate-50">Web research</h4>
+                    <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Collects live information from the web and summarizes the most relevant findings.</p>
+                  </div>
+                  <div class="relative inline-block action-menu">
+                    <button type="button" class="action-trigger rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-50" aria-label="Open skill actions">⋮</button>
+                    <div class="menu hidden absolute right-0 top-10 z-20 w-40 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800">
+                      <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-700" data-modal-type="skill" data-skill-name="Web research" data-skill-description="Collects live information from the web and summarizes the most relevant findings." data-skill-count="18 agents">View detail</button>
+                      <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-red-600 transition hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/40" data-action="delete-row">Delete</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="mt-5 flex items-center justify-between border-t border-slate-200 pt-4 text-sm dark:border-slate-700">
+                  <span class="text-slate-500 dark:text-slate-400">Enabled on</span>
+                  <span class="font-semibold text-slate-800 dark:text-slate-100">18 agents</span>
+                </div>
+              </article>
+
+              <article data-row="skill-2" class="skill-card rounded-2xl border border-slate-200 bg-white p-5 shadow-soft dark:border-slate-800 dark:bg-slate-900">
+                <div class="flex items-start justify-between gap-4">
+                  <div>
+                    <h4 class="text-lg font-semibold text-slate-900 dark:text-slate-50">Knowledge base lookup</h4>
+                    <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Searches internal documents and extracts the right answer with citation-aware context.</p>
+                  </div>
+                  <div class="relative inline-block action-menu">
+                    <button type="button" class="action-trigger rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-50" aria-label="Open skill actions">⋮</button>
+                    <div class="menu hidden absolute right-0 top-10 z-20 w-40 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800">
+                      <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-700" data-modal-type="skill" data-skill-name="Knowledge base lookup" data-skill-description="Searches internal documents and extracts the right answer with citation-aware context." data-skill-count="26 agents">View detail</button>
+                      <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-red-600 transition hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/40" data-action="delete-row">Delete</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="mt-5 flex items-center justify-between border-t border-slate-200 pt-4 text-sm dark:border-slate-700">
+                  <span class="text-slate-500 dark:text-slate-400">Enabled on</span>
+                  <span class="font-semibold text-slate-800 dark:text-slate-100">26 agents</span>
+                </div>
+              </article>
+
+              <article data-row="skill-3" class="skill-card rounded-2xl border border-slate-200 bg-white p-5 shadow-soft dark:border-slate-800 dark:bg-slate-900">
+                <div class="flex items-start justify-between gap-4">
+                  <div>
+                    <h4 class="text-lg font-semibold text-slate-900 dark:text-slate-50">CRM sync</h4>
+                    <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Updates customer records and deal context across connected sales tools.</p>
+                  </div>
+                  <div class="relative inline-block action-menu">
+                    <button type="button" class="action-trigger rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-50" aria-label="Open skill actions">⋮</button>
+                    <div class="menu hidden absolute right-0 top-10 z-20 w-40 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800">
+                      <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-700" data-modal-type="skill" data-skill-name="CRM sync" data-skill-description="Updates customer records and deal context across connected sales tools." data-skill-count="14 agents">View detail</button>
+                      <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-red-600 transition hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/40" data-action="delete-row">Delete</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="mt-5 flex items-center justify-between border-t border-slate-200 pt-4 text-sm dark:border-slate-700">
+                  <span class="text-slate-500 dark:text-slate-400">Enabled on</span>
+                  <span class="font-semibold text-slate-800 dark:text-slate-100">14 agents</span>
+                </div>
+              </article>
+
+              <article data-row="skill-4" class="skill-card rounded-2xl border border-slate-200 bg-white p-5 shadow-soft dark:border-slate-800 dark:bg-slate-900">
+                <div class="flex items-start justify-between gap-4">
+                  <div>
+                    <h4 class="text-lg font-semibold text-slate-900 dark:text-slate-50">Meeting summary</h4>
+                    <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Transcribes conversations, identifies action items, and condenses the outcome.</p>
+                  </div>
+                  <div class="relative inline-block action-menu">
+                    <button type="button" class="action-trigger rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-50" aria-label="Open skill actions">⋮</button>
+                    <div class="menu hidden absolute right-0 top-10 z-20 w-40 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800">
+                      <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-700" data-modal-type="skill" data-skill-name="Meeting summary" data-skill-description="Transcribes conversations, identifies action items, and condenses the outcome." data-skill-count="11 agents">View detail</button>
+                      <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-red-600 transition hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/40" data-action="delete-row">Delete</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="mt-5 flex items-center justify-between border-t border-slate-200 pt-4 text-sm dark:border-slate-700">
+                  <span class="text-slate-500 dark:text-slate-400">Enabled on</span>
+                  <span class="font-semibold text-slate-800 dark:text-slate-100">11 agents</span>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section id="contracts" class="mt-12 hidden">
+            <div class="mb-4 flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Revenue tracking</p>
+                <h3 class="text-xl font-semibold text-slate-900 dark:text-slate-50">Agent Contracts</h3>
+              </div>
+            </div>
+
+            <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-soft dark:border-slate-800 dark:bg-slate-900">
+              <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-800">
+                <thead class="bg-slate-50 dark:bg-slate-800/80">
+                  <tr>
+                    <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">Client</th>
+                    <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">Agent</th>
+                    <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">Skills</th>
+                    <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">Dates</th>
+                    <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">Total</th>
+                    <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                  <tr data-row="contract-1" class="hover:bg-slate-50 dark:hover:bg-slate-800/60">
+                    <td class="px-5 py-4 text-sm text-slate-900 dark:text-slate-50">Northstar Labs</td>
+                    <td class="px-5 py-4 text-sm text-slate-600 dark:text-slate-300">Sales Enablement Agent</td>
+                    <td class="px-5 py-4 text-sm text-slate-600 dark:text-slate-300">Web research, CRM sync</td>
+                    <td class="px-5 py-4 text-sm text-slate-600 dark:text-slate-300">Aug 12 — Sep 12</td>
+                    <td class="px-5 py-4 text-sm font-semibold text-slate-900 dark:text-slate-50">$2,950</td>
+                    <td class="px-5 py-4 text-right">
+                      <div class="relative inline-block action-menu">
+                        <button type="button" class="action-trigger rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-50" aria-label="Open contract actions">⋮</button>
+                        <div class="menu hidden absolute right-0 top-10 z-20 w-40 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800">
+                          <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-700" data-modal-type="contract" data-contract-client="Northstar Labs" data-contract-agent="Sales Enablement Agent" data-contract-skills="Web research ($320), CRM sync ($280), Meeting summary ($190)" data-contract-dates="Aug 12, 2026 — Sep 12, 2026" data-contract-total="$2,950" data-contract-status="Active">View detail</button>
+                          <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-red-600 transition hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/40" data-action="delete-row">Delete</button>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr data-row="contract-2" class="hover:bg-slate-50 dark:hover:bg-slate-800/60">
+                    <td class="px-5 py-4 text-sm text-slate-900 dark:text-slate-50">Harbor Logic</td>
+                    <td class="px-5 py-4 text-sm text-slate-600 dark:text-slate-300">Support Triage Agent</td>
+                    <td class="px-5 py-4 text-sm text-slate-600 dark:text-slate-300">Inbox routing, sentiment analysis</td>
+                    <td class="px-5 py-4 text-sm text-slate-600 dark:text-slate-300">Jul 02 — Aug 02</td>
+                    <td class="px-5 py-4 text-sm font-semibold text-slate-900 dark:text-slate-50">$1,880</td>
+                    <td class="px-5 py-4 text-right">
+                      <div class="relative inline-block action-menu">
+                        <button type="button" class="action-trigger rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-50" aria-label="Open contract actions">⋮</button>
+                        <div class="menu hidden absolute right-0 top-10 z-20 w-40 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800">
+                          <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-700" data-modal-type="contract" data-contract-client="Harbor Logic" data-contract-agent="Support Triage Agent" data-contract-skills="Inbox routing ($210), Sentiment analysis ($175), Knowledge base lookup ($140)" data-contract-dates="Jul 02, 2026 — Aug 02, 2026" data-contract-total="$1,880" data-contract-status="Completed">View detail</button>
+                          <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-red-600 transition hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/40" data-action="delete-row">Delete</button>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr data-row="contract-3" class="hover:bg-slate-50 dark:hover:bg-slate-800/60">
+                    <td class="px-5 py-4 text-sm text-slate-900 dark:text-slate-50">Atlas Ops</td>
+                    <td class="px-5 py-4 text-sm text-slate-600 dark:text-slate-300">Ops Monitor Agent</td>
+                    <td class="px-5 py-4 text-sm text-slate-600 dark:text-slate-300">Log analysis, alert summarization</td>
+                    <td class="px-5 py-4 text-sm text-slate-600 dark:text-slate-300">Sep 01 — Oct 01</td>
+                    <td class="px-5 py-4 text-sm font-semibold text-slate-900 dark:text-slate-50">$3,260</td>
+                    <td class="px-5 py-4 text-right">
+                      <div class="relative inline-block action-menu">
+                        <button type="button" class="action-trigger rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-50" aria-label="Open contract actions">⋮</button>
+                        <div class="menu hidden absolute right-0 top-10 z-20 w-40 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800">
+                          <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-700" data-modal-type="contract" data-contract-client="Atlas Ops" data-contract-agent="Ops Monitor Agent" data-contract-skills="Log analysis ($340), Alert summarization ($290), Incident trace ($260)" data-contract-dates="Sep 01, 2026 — Oct 01, 2026" data-contract-total="$3,260" data-contract-status="Active">View detail</button>
+                          <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-red-600 transition hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/40" data-action="delete-row">Delete</button>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr data-row="contract-4" class="hover:bg-slate-50 dark:hover:bg-slate-800/60">
+                    <td class="px-5 py-4 text-sm text-slate-900 dark:text-slate-50">Copper Peak</td>
+                    <td class="px-5 py-4 text-sm text-slate-600 dark:text-slate-300">Revenue Forecast Agent</td>
+                    <td class="px-5 py-4 text-sm text-slate-600 dark:text-slate-300">Pipeline scoring, forecast modeling</td>
+                    <td class="px-5 py-4 text-sm text-slate-600 dark:text-slate-300">Jun 18 — Jul 18</td>
+                    <td class="px-5 py-4 text-sm font-semibold text-slate-900 dark:text-slate-50">$2,420</td>
+                    <td class="px-5 py-4 text-right">
+                      <div class="relative inline-block action-menu">
+                        <button type="button" class="action-trigger rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-50" aria-label="Open contract actions">⋮</button>
+                        <div class="menu hidden absolute right-0 top-10 z-20 w-40 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800">
+                          <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-700" data-modal-type="contract" data-contract-client="Copper Peak" data-contract-agent="Revenue Forecast Agent" data-contract-skills="Pipeline scoring ($230), Forecast modeling ($225), Trend summary ($115)" data-contract-dates="Jun 18, 2026 — Jul 18, 2026" data-contract-total="$2,420" data-contract-status="Completed">View detail</button>
+                          <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-red-600 transition hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/40" data-action="delete-row">Delete</button>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section id="errors" class="mt-12 hidden">
+            <div class="mb-4 flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Runtime signals</p>
+                <h3 class="text-xl font-semibold text-slate-900 dark:text-slate-50">Error Log</h3>
+              </div>
+            </div>
+
+            <div class="space-y-3">
+              <article data-row="error-1" class="rounded-2xl border border-slate-200 bg-white p-4 shadow-soft dark:border-slate-800 dark:bg-slate-900">
+                <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                  <div class="flex flex-wrap items-center gap-3">
+                    <span class="text-xs font-medium text-slate-500 dark:text-slate-400">2026-09-25 09:12:03</span>
+                    <span class="text-sm font-medium text-slate-800 dark:text-slate-100">Sales Enablement Agent</span>
+                    <span class="inline-flex rounded-full bg-amber-100 px-2.5 py-1 text-xs font-semibold text-amber-700 dark:bg-amber-900/60 dark:text-amber-200">Warning</span>
+                  </div>
+                  <div class="relative inline-block action-menu">
+                    <button type="button" class="action-trigger rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-50" aria-label="Open error actions">⋮</button>
+                    <div class="menu hidden absolute right-0 top-10 z-20 w-44 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800">
+                      <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-700" data-modal-type="error" data-error-timestamp="2026-09-25 09:12:03" data-error-agent="Sales Enablement Agent" data-error-type="Warning" data-error-summary="Rate limit exceeded while refreshing lead data." data-error-trace="Traceback (most recent call last):\n  File /app/agent.py, line 58, in ingest_leads\n    fetch(api_url, headers=headers)\nRateLimitError: provider rejected call after 5 retries.\nRecovery: request backoff activated and the task resumed with cached lead data.">View detail</button>
+                      <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-indigo-600 transition hover:bg-indigo-50 dark:text-indigo-300 dark:hover:bg-indigo-950/40" data-action="mark-resolved">Mark as resolved</button>
+                    </div>
+                  </div>
+                </div>
+                <p class="mt-3 text-sm text-slate-600 dark:text-slate-300">Rate limit exceeded while refreshing lead data.</p>
+              </article>
+
+              <article data-row="error-2" class="rounded-2xl border border-slate-200 bg-white p-4 shadow-soft dark:border-slate-800 dark:bg-slate-900">
+                <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                  <div class="flex flex-wrap items-center gap-3">
+                    <span class="text-xs font-medium text-slate-500 dark:text-slate-400">2026-09-25 08:56:19</span>
+                    <span class="text-sm font-medium text-slate-800 dark:text-slate-100">Support Triage Agent</span>
+                    <span class="inline-flex rounded-full bg-rose-100 px-2.5 py-1 text-xs font-semibold text-rose-700 dark:bg-rose-900/60 dark:text-rose-200">Critical</span>
+                  </div>
+                  <div class="relative inline-block action-menu">
+                    <button type="button" class="action-trigger rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-50" aria-label="Open error actions">⋮</button>
+                    <div class="menu hidden absolute right-0 top-10 z-20 w-44 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800">
+                      <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-700" data-modal-type="error" data-error-timestamp="2026-09-25 08:56:19" data-error-agent="Support Triage Agent" data-error-type="Critical" data-error-summary="Authentication failure on customer ticket sync." data-error-trace="Traceback (most recent call last):\n  File /app/triage.py, line 102, in sync_done_tickets\n    auth = token.refresh()\nAuthError: refresh token expired\nAction: admin session re-authentication required.">View detail</button>
+                      <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-indigo-600 transition hover:bg-indigo-50 dark:text-indigo-300 dark:hover:bg-indigo-950/40" data-action="mark-resolved">Mark as resolved</button>
+                    </div>
+                  </div>
+                </div>
+                <p class="mt-3 text-sm text-slate-600 dark:text-slate-300">Authentication failure on customer ticket sync.</p>
+              </article>
+
+              <article data-row="error-3" class="rounded-2xl border border-slate-200 bg-white p-4 shadow-soft dark:border-slate-800 dark:bg-slate-900">
+                <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                  <div class="flex flex-wrap items-center gap-3">
+                    <span class="text-xs font-medium text-slate-500 dark:text-slate-400">2026-09-25 08:41:08</span>
+                    <span class="text-sm font-medium text-slate-800 dark:text-slate-100">Ops Monitor Agent</span>
+                    <span class="inline-flex rounded-full bg-sky-100 px-2.5 py-1 text-xs font-semibold text-sky-700 dark:bg-sky-900/60 dark:text-sky-200">Timeout</span>
+                  </div>
+                  <div class="relative inline-block action-menu">
+                    <button type="button" class="action-trigger rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-50" aria-label="Open error actions">⋮</button>
+                    <div class="menu hidden absolute right-0 top-10 z-20 w-44 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800">
+                      <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-700" data-modal-type="error" data-error-timestamp="2026-09-25 08:41:08" data-error-agent="Ops Monitor Agent" data-error-type="Timeout" data-error-summary="Workflow execution exceeded 45-second SLA." data-error-trace="Traceback (most recent call last):\n  File /app/monitor.py, line 210, in poll_metrics\n    response = client.request(endpoint)\nTimeoutError: request exceeded 45s\nResult: health check was retried with a smaller batch window.">View detail</button>
+                      <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-indigo-600 transition hover:bg-indigo-50 dark:text-indigo-300 dark:hover:bg-indigo-950/40" data-action="mark-resolved">Mark as resolved</button>
+                    </div>
+                  </div>
+                </div>
+                <p class="mt-3 text-sm text-slate-600 dark:text-slate-300">Workflow execution exceeded 45-second SLA.</p>
+              </article>
+
+              <article data-row="error-4" class="rounded-2xl border border-slate-200 bg-white p-4 shadow-soft dark:border-slate-800 dark:bg-slate-900">
+                <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                  <div class="flex flex-wrap items-center gap-3">
+                    <span class="text-xs font-medium text-slate-500 dark:text-slate-400">2026-09-24 21:58:26</span>
+                    <span class="text-sm font-medium text-slate-800 dark:text-slate-100">Revenue Forecast Agent</span>
+                    <span class="inline-flex rounded-full bg-violet-100 px-2.5 py-1 text-xs font-semibold text-violet-700 dark:bg-violet-900/60 dark:text-violet-200">Runtime</span>
+                  </div>
+                  <div class="relative inline-block action-menu">
+                    <button type="button" class="action-trigger rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-50" aria-label="Open error actions">⋮</button>
+                    <div class="menu hidden absolute right-0 top-10 z-20 w-44 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800">
+                      <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-700" data-modal-type="error" data-error-timestamp="2026-09-24 21:58:26" data-error-agent="Revenue Forecast Agent" data-error-type="Runtime" data-error-summary="Missing value in conversion history caused partial forecast failure." data-error-trace="Traceback (most recent call last):\n  File /app/forecast.py, line 146, in build_projection\n    return model.predict(history)\nValueError: conversion history contains NaN values\nMitigation: missing windows were excluded from the model inputs.">View detail</button>
+                      <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-indigo-600 transition hover:bg-indigo-50 dark:text-indigo-300 dark:hover:bg-indigo-950/40" data-action="mark-resolved">Mark as resolved</button>
+                    </div>
+                  </div>
+                </div>
+                <p class="mt-3 text-sm text-slate-600 dark:text-slate-300">Missing value in conversion history caused partial forecast failure.</p>
+              </article>
+
+              <article data-row="error-5" class="rounded-2xl border border-slate-200 bg-white p-4 shadow-soft dark:border-slate-800 dark:bg-slate-900">
+                <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                  <div class="flex flex-wrap items-center gap-3">
+                    <span class="text-xs font-medium text-slate-500 dark:text-slate-400">2026-09-24 19:17:43</span>
+                    <span class="text-sm font-medium text-slate-800 dark:text-slate-100">Sales Enablement Agent</span>
+                    <span class="inline-flex rounded-full bg-red-100 px-2.5 py-1 text-xs font-semibold text-red-700 dark:bg-red-900/60 dark:text-red-200">Critical</span>
+                  </div>
+                  <div class="relative inline-block action-menu">
+                    <button type="button" class="action-trigger rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-50" aria-label="Open error actions">⋮</button>
+                    <div class="menu hidden absolute right-0 top-10 z-20 w-44 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800">
+                      <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-700" data-modal-type="error" data-error-timestamp="2026-09-24 19:17:43" data-error-agent="Sales Enablement Agent" data-error-type="Critical" data-error-summary="Unexpected schema change in lead enrichment payload." data-error-trace="Traceback (most recent call last):\n  File /app/lead_enrichment.py, line 185, in normalize_fields\n    title = payload['customer']['title']\nKeyError: 'title'\nResult: fallback schema applied while upstream provider is updated.">View detail</button>
+                      <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-indigo-600 transition hover:bg-indigo-50 dark:text-indigo-300 dark:hover:bg-indigo-950/40" data-action="mark-resolved">Mark as resolved</button>
+                    </div>
+                  </div>
+                </div>
+                <p class="mt-3 text-sm text-slate-600 dark:text-slate-300">Unexpected schema change in lead enrichment payload.</p>
+              </article>
+
+              <article data-row="error-6" class="rounded-2xl border border-slate-200 bg-white p-4 shadow-soft dark:border-slate-800 dark:bg-slate-900">
+                <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                  <div class="flex flex-wrap items-center gap-3">
+                    <span class="text-xs font-medium text-slate-500 dark:text-slate-400">2026-09-24 18:23:09</span>
+                    <span class="text-sm font-medium text-slate-800 dark:text-slate-100">Support Triage Agent</span>
+                    <span class="inline-flex rounded-full bg-amber-100 px-2.5 py-1 text-xs font-semibold text-amber-700 dark:bg-amber-900/60 dark:text-amber-200">Warning</span>
+                  </div>
+                  <div class="relative inline-block action-menu">
+                    <button type="button" class="action-trigger rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-50" aria-label="Open error actions">⋮</button>
+                    <div class="menu hidden absolute right-0 top-10 z-20 w-44 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800">
+                      <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-700" data-modal-type="error" data-error-timestamp="2026-09-24 18:23:09" data-error-agent="Support Triage Agent" data-error-type="Warning" data-error-summary="Queued message backlog exceeded threshold after API outage." data-error-trace="Traceback (most recent call last):\n  File /app/queue_manager.py, line 130, in process_batch\n    poll(queue_url)\nQueueBacklogError: backlog exceeds 300 messages\nAction: queue worker scaled horizontally and backlog was rebalanced.">View detail</button>
+                      <button type="button" class="dropdown-action block w-full px-4 py-2.5 text-left text-sm text-indigo-600 transition hover:bg-indigo-50 dark:text-indigo-300 dark:hover:bg-indigo-950/40" data-action="mark-resolved">Mark as resolved</button>
+                    </div>
+                  </div>
+                </div>
+                <p class="mt-3 text-sm text-slate-600 dark:text-slate-300">Queued message backlog exceeded threshold after API outage.</p>
+              </article>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <div id="modal-root" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/70 p-4 backdrop-blur-sm">
+      <div class="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-5 shadow-2xl dark:border-slate-700 dark:bg-slate-900">
+        <div class="mb-4 flex items-center justify-between">
+          <h3 id="modal-title" class="text-xl font-semibold text-slate-900 dark:text-slate-50">Detail</h3>
+          <button type="button" class="close-modal rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-50" aria-label="Close modal">✕</button>
+        </div>
+        <div id="modal-body" class="space-y-4 text-sm text-slate-600 dark:text-slate-300"></div>
+      </div>
+    </div>
+
+    <script>
+      const root = document.documentElement;
+      const body = document.body;
+      const modalRoot = document.getElementById('modal-root');
+      const modalTitle = document.getElementById('modal-title');
+      const modalBody = document.getElementById('modal-body');
+      const navLinks = document.querySelectorAll('.nav-link');
+      const sections = document.querySelectorAll('main section');
+
+      function applyTheme() {
+        const darkMode = localStorage.getItem('agenthub-theme') === 'dark';
+        root.classList.toggle('dark', darkMode);
+        const icon = document.getElementById('theme-icon');
+        const label = document.getElementById('theme-label');
+        icon.textContent = darkMode ? '🌙' : '☀️';
+        label.textContent = darkMode ? 'Dark' : 'Light';
+      }
+
+      function setActiveSection(id) {
+        navLinks.forEach((link) => {
+          const isActive = link.getAttribute('href') === `#${id}`;
+          link.classList.toggle('bg-slate-900', isActive);
+          link.classList.toggle('text-white', isActive);
+          link.classList.toggle('dark:bg-slate-700', isActive);
+          link.classList.toggle('shadow-sm', isActive);
+          if (!isActive) {
+            link.classList.remove('text-white');
+            link.classList.remove('dark:text-white');
+          }
+        });
+      }
+
+      function showSection(id) {
+        sections.forEach((section) => {
+          const shouldShow = section.id === id;
+          section.classList.toggle('hidden', !shouldShow);
+        });
+        setActiveSection(id);
+      }
+
+      navLinks.forEach((link) => {
+        link.addEventListener('click', (event) => {
+          event.preventDefault();
+          const targetId = link.getAttribute('href').replace('#', '');
+          showSection(targetId);
+        });
+      });
+
+      function openModal(type, data) {
+        modalRoot.classList.remove('hidden');
+        modalRoot.classList.add('flex');
+
+        if (type === 'user') {
+          modalTitle.textContent = 'User record';
+          modalBody.innerHTML = `
+            <div class="grid gap-4 md:grid-cols-2">
+              <div class="rounded-xl bg-slate-100 p-3 dark:bg-slate-800">
+                <p class="text-xs uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Name</p>
+                <p class="mt-2 text-base font-semibold text-slate-900 dark:text-slate-50">${data.userName}</p>
+              </div>
+              <div class="rounded-xl bg-slate-100 p-3 dark:bg-slate-800">
+                <p class="text-xs uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Status</p>
+                <p class="mt-2 text-base font-semibold text-slate-900 dark:text-slate-50">${data.userStatus}</p>
+              </div>
+              <div class="rounded-xl bg-slate-100 p-3 dark:bg-slate-800">
+                <p class="text-xs uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Email</p>
+                <p class="mt-2 text-base font-semibold text-slate-900 dark:text-slate-50">${data.userEmail}</p>
+              </div>
+              <div class="rounded-xl bg-slate-100 p-3 dark:bg-slate-800">
+                <p class="text-xs uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Plan</p>
+                <p class="mt-2 text-base font-semibold text-slate-900 dark:text-slate-50">${data.userPlan}</p>
+              </div>
+              <div class="rounded-xl bg-slate-100 p-3 dark:bg-slate-800">
+                <p class="text-xs uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Company</p>
+                <p class="mt-2 text-base font-semibold text-slate-900 dark:text-slate-50">${data.userCompany}</p>
+              </div>
+              <div class="rounded-xl bg-slate-100 p-3 dark:bg-slate-800">
+                <p class="text-xs uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Region</p>
+                <p class="mt-2 text-base font-semibold text-slate-900 dark:text-slate-50">${data.userRegion}</p>
+              </div>
+            </div>
+            <div class="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+              <p class="text-xs uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Last login</p>
+              <p class="mt-2 text-base font-semibold text-slate-900 dark:text-slate-50">${data.userLastLogin}</p>
+            </div>
+          `;
+        }
+
+        if (type === 'configure') {
+          modalTitle.textContent = `${data.agentName} system prompt`;
+          modalBody.innerHTML = `
+            <label for="agent-prompt" class="block text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">System prompt</label>
+            <textarea id="agent-prompt" rows="10" class="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700 focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">${data.agentPrompt}</textarea>
+            <div class="flex justify-end gap-3 pt-2">
+              <button type="button" class="close-modal rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">Cancel</button>
+              <button type="button" class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500">Save changes</button>
+            </div>
+          `;
+        }
+
+        if (type === 'skill') {
+          modalTitle.textContent = 'Skill detail';
+          modalBody.innerHTML = `
+            <div class="rounded-xl bg-slate-100 p-4 dark:bg-slate-800">
+              <p class="text-xs uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Skill</p>
+              <p class="mt-2 text-xl font-semibold text-slate-900 dark:text-slate-50">${data.skillName}</p>
+            </div>
+            <div class="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+              <p class="text-xs uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Description</p>
+              <p class="mt-2 text-base text-slate-700 dark:text-slate-200">${data.skillDescription}</p>
+            </div>
+            <div class="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+              <p class="text-xs uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Adoption</p>
+              <p class="mt-2 text-base font-semibold text-slate-900 dark:text-slate-50">${data.skillCount}</p>
+            </div>
+          `;
+        }
+
+        if (type === 'contract') {
+          modalTitle.textContent = 'Contract breakdown';
+          modalBody.innerHTML = `
+            <div class="grid gap-4 md:grid-cols-2">
+              <div class="rounded-xl bg-slate-100 p-3 dark:bg-slate-800">
+                <p class="text-xs uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Client</p>
+                <p class="mt-2 text-base font-semibold text-slate-900 dark:text-slate-50">${data.contractClient}</p>
+              </div>
+              <div class="rounded-xl bg-slate-100 p-3 dark:bg-slate-800">
+                <p class="text-xs uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Status</p>
+                <p class="mt-2 text-base font-semibold text-slate-900 dark:text-slate-50">${data.contractStatus}</p>
+              </div>
+            </div>
+            <div class="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+              <p class="text-xs uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Agent</p>
+              <p class="mt-2 text-base font-semibold text-slate-900 dark:text-slate-50">${data.contractAgent}</p>
+            </div>
+            <div class="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+              <p class="text-xs uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Dates</p>
+              <p class="mt-2 text-base text-slate-700 dark:text-slate-200">${data.contractDates}</p>
+            </div>
+            <div class="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+              <p class="text-xs uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Itemized skills</p>
+              <ul class="mt-3 space-y-2 text-base text-slate-700 dark:text-slate-200">
+                ${data.contractSkills.split(',').map((skill) => `<li class="flex items-center justify-between gap-3 rounded-lg bg-slate-50 px-3 py-2 dark:bg-slate-800"><span>${skill.trim()}</span></li>`).join('')}
+              </ul>
+            </div>
+            <div class="rounded-xl bg-indigo-50 p-4 dark:bg-indigo-950/40">
+              <div class="flex items-center justify-between">
+                <span class="text-sm font-semibold text-indigo-800 dark:text-indigo-200">Total amount</span>
+                <span class="text-xl font-bold text-indigo-900 dark:text-indigo-100">${data.contractTotal}</span>
+              </div>
+            </div>
+          `;
+        }
+
+        if (type === 'error') {
+          modalTitle.textContent = 'Error trace';
+          modalBody.innerHTML = `
+            <div class="grid gap-4 md:grid-cols-2">
+              <div class="rounded-xl bg-slate-100 p-3 dark:bg-slate-800">
+                <p class="text-xs uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Timestamp</p>
+                <p class="mt-2 text-base font-semibold text-slate-900 dark:text-slate-50">${data.errorTimestamp}</p>
+              </div>
+              <div class="rounded-xl bg-slate-100 p-3 dark:bg-slate-800">
+                <p class="text-xs uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Error type</p>
+                <p class="mt-2 text-base font-semibold text-slate-900 dark:text-slate-50">${data.errorType}</p>
+              </div>
+            </div>
+            <div class="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+              <p class="text-xs uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Agent</p>
+              <p class="mt-2 text-base font-semibold text-slate-900 dark:text-slate-50">${data.errorAgent}</p>
+            </div>
+            <div class="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+              <p class="text-xs uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Summary</p>
+              <p class="mt-2 text-base text-slate-700 dark:text-slate-200">${data.errorSummary}</p>
+            </div>
+            <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 font-mono text-xs leading-6 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 whitespace-pre-wrap">${data.errorTrace}</div>
+          `;
+        }
+      }
+
+      function closeModal() {
+        modalRoot.classList.add('hidden');
+        modalRoot.classList.remove('flex');
+      }
+
+      function closeMenus() {
+        document.querySelectorAll('.menu').forEach((menu) => menu.classList.add('hidden'));
+      }
+
+      document.getElementById('theme-toggle').addEventListener('click', () => {
+        const isDark = !root.classList.contains('dark');
+        localStorage.setItem('agenthub-theme', isDark ? 'dark' : 'light');
+        applyTheme();
+      });
+
+      document.querySelectorAll('.action-trigger').forEach((trigger) => {
+        trigger.addEventListener('click', (event) => {
+          event.stopPropagation();
+          const parent = trigger.closest('.action-menu');
+          const menu = parent.querySelector('.menu');
+          const isOpen = !menu.classList.contains('hidden');
+          closeMenus();
+          if (!isOpen) {
+            menu.classList.remove('hidden');
+          }
+        });
+      });
+
+      document.addEventListener('click', (event) => {
+        if (!event.target.closest('.action-menu')) {
+          closeMenus();
+        }
+        if (event.target === modalRoot) {
+          closeModal();
+        }
+      });
+
+      document.querySelectorAll('.dropdown-action').forEach((button) => {
+        button.addEventListener('click', (event) => {
+          const menu = button.closest('.menu');
+          menu.classList.add('hidden');
+
+          const action = button.dataset.action;
+          if (action === 'delete-row') {
+            const row = button.closest('[data-row]');
+            if (row) row.remove();
+            return;
+          }
+
+          if (action === 'mark-resolved') {
+            const row = button.closest('[data-row]');
+            if (row) {
+              row.classList.add('opacity-70');
+              const badge = row.querySelector('.inline-flex');
+              if (badge) {
+                badge.textContent = 'Resolved';
+                badge.classList.remove('bg-amber-100', 'bg-rose-100', 'bg-sky-100', 'bg-violet-100', 'bg-red-100');
+                badge.classList.add('bg-emerald-100', 'text-emerald-700');
+              }
+            }
+            return;
+          }
+
+          const modalType = button.dataset.modalType;
+          if (modalType) {
+            openModal(modalType, button.dataset);
+          }
+        });
+      });
+
+      document.querySelectorAll('.agent-toggle').forEach((toggle) => {
+        toggle.addEventListener('click', () => {
+          const card = toggle.closest('.agent-card');
+          const skillList = card.querySelector('.skill-list');
+          const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+          toggle.setAttribute('aria-expanded', String(!isOpen));
+          skillList.style.maxHeight = isOpen ? '0px' : `${skillList.scrollHeight + 30}px`;
+        });
+      });
+
+      document.querySelectorAll('.close-modal').forEach((button) => {
+        button.addEventListener('click', closeModal);
+      });
+
+      document.getElementById('modal-root').addEventListener('click', (event) => {
+        if (event.target === modalRoot) closeModal();
+      });
+
+      showSection('dashboard');
+      applyTheme();
+    </script>
+  </body>
+</html>
